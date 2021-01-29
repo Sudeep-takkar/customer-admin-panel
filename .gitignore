@@ -1,0 +1,8 @@
+node_modules
+.DS_Store
+.env
+
+./react-app/build
+./react-app/node_modules
+./react-app/.env
+./react-app/.eslintcache
