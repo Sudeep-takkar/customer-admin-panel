@@ -14,7 +14,12 @@ import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import TablePaginationActions from '../TablePaginationActions.js';
+import TablePagination from '@material-ui/core/TablePagination';
 
 import ProgramDataService from "./ProgramService";
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -27,8 +32,15 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
     },
+    paper: {
+        marginTop: theme.spacing(8),
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
     container: {
-        marginTop: theme.spacing(8)
+        maxHeight: 600
     },
     table: {
         minWidth: 650
@@ -37,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: '5px'
     },
     fab: {
-        position: 'absolute',
+        position: 'fixed',
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
@@ -70,6 +82,24 @@ export default function ProgramsList(props) {
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [mounted, setMounted] = useState(true);
     const [opendrawer, setOpendrawer] = useState(true);
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [emptyrows, setEmptyrows] = useState(0);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    useEffect(() => {
+        let emptyRows = rowsPerPage - Math.min(rowsPerPage, programs.length - page * rowsPerPage)
+        setEmptyrows(emptyRows)
+    }, [rowsPerPage, programs, page]);
 
     useEffect(() => {
         if (programs.length && !alert && !alertmsg) {
@@ -108,15 +138,17 @@ export default function ProgramsList(props) {
     }
 
     const handleEditProgramDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setProgramid(e.target.parentElement.value)
+        if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
+            let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
+            setProgramid(value)
         }
         setOpendialogtype('editProgram')
     }
 
     const handleDeleteProgramDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setProgramid(e.target.parentElement.value)
+        if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
+            let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
+            setProgramid(value)
         }
         setOpendialogtype('deleteProgram')
     }
@@ -211,41 +243,79 @@ export default function ProgramsList(props) {
                     [classes.contentShift]: opendrawer,
                 })}
             >
-                <TableContainer component={Paper} className={classes.container} >
-                    <Table className={classes.table} stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center"><Typography variant="h6">Title</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Duration</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Is&nbsp;Co-op&nbsp;included</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Admissions&nbsp;Link</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {programs.map((row) => (
-                                <TableRow key={row._id}>
-                                    <TableCell component="th" scope="row" align="center">
-                                        {row.title}
-                                    </TableCell>
-                                    <TableCell align="center">{row.duration}</TableCell>
-                                    <TableCell align="center">{row.isCoop}</TableCell>
-                                    <TableCell align="center">
-                                        <a rel="noopener noreferrer" href={row.admissionsLink} target="_blank">{row.admissionsLink}</a>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Button variant="outlined" color="primary" value={row._id} onClick={handleEditProgramDialogOpen}>
-                                            Edit
-                                    </Button>
-                                        <Button className={classes.btn} variant="outlined" color="primary" value={row._id} onClick={handleDeleteProgramDialogOpen}>
-                                            Delete
-                                    </Button>
-                                    </TableCell>
+                <Paper className={classes.paper}>
+                    <TableContainer className={classes.container} >
+                        <Table className={classes.table} stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center"><Typography variant="h6">Title</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Duration</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Is&nbsp;Co-op&nbsp;included</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Admissions&nbsp;Link</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {(rowsPerPage > 0
+                                    ? programs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : programs
+                                ).map((row) => (
+                                    <TableRow key={row._id}>
+                                        <TableCell component="th" scope="row" align="center">
+                                            {row.title}
+                                        </TableCell>
+                                        <TableCell align="center">{row.duration}</TableCell>
+                                        <TableCell align="center">{row.isCoop}</TableCell>
+                                        <TableCell align="center">
+                                            <a rel="noopener noreferrer" href={row.admissionsLink} target="_blank">{row.admissionsLink}</a>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <IconButton
+                                                color="primary"
+                                                aria-label="edit"
+                                                value={row._id}
+                                                onClick={handleEditProgramDialogOpen}
+                                                edge="start"
+                                                className={clsx(classes.menuButton)}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                color="primary"
+                                                aria-label="edit"
+                                                value={row._id}
+                                                onClick={handleDeleteProgramDialogOpen}
+                                                edge="start"
+                                                className={clsx(classes.btn)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                {emptyrows > 0 && (
+                                    <TableRow style={{ height: 53 * emptyrows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                        colSpan={3}
+                        count={programs.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                            inputProps: { 'aria-label': 'rows per page' },
+                            native: true,
+                        }}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                    />
+                </Paper>
             </main>
             <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleAddProgramDialogOpen}>
                 <AddIcon />

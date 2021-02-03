@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import Button from '@material-ui/core/Button';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,7 +13,12 @@ import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import TablePaginationActions from '../TablePaginationActions.js';
+import TablePagination from '@material-ui/core/TablePagination';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import StudentDataService from "./StudentService";
@@ -26,8 +30,15 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
     },
+    paper: {
+        marginTop: theme.spacing(8),
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
     container: {
-        marginTop: theme.spacing(8)
+        maxHeight: 600
     },
     table: {
         minWidth: 650
@@ -36,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: '5px'
     },
     fab: {
-        position: 'absolute',
+        position: 'fixed',
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
@@ -65,10 +76,23 @@ export default function StudentsList(props) {
     const classes = useStyles();
     const [students, setStudents] = useState([]);
     const [studentid, setStudentid] = useState(null);
-    const [opendialogtype, setOpendialogtype] = React.useState(null);
+    const [opendialogtype, setOpendialogtype] = useState(null);
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [mounted, setMounted] = useState(true);
     const [opendrawer, setOpendrawer] = useState(true);
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [emptyrows, setEmptyrows] = useState(0);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     useEffect(() => {
         if (students.length && !alert && !alertmsg) {
@@ -99,6 +123,11 @@ export default function StudentsList(props) {
         }
     }, [alert])
 
+    useEffect(() => {
+        let emptyRows = rowsPerPage - Math.min(rowsPerPage, students.length - page * rowsPerPage)
+        setEmptyrows(emptyRows)
+    }, [rowsPerPage, students, page]);
+
     const handleAddStudentDialogOpen = (e) => {
         setStudentid('addStudent')
         setOpendialogtype('addStudent')
@@ -113,15 +142,17 @@ export default function StudentsList(props) {
     };
 
     const handleEditStudentDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setStudentid(e.target.parentElement.value)
+        if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
+            let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
+            setStudentid(value)
         }
         setOpendialogtype('editStudent')
     }
 
     const handleDeleteStudentDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setStudentid(e.target.parentElement.value)
+        if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
+            let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
+            setStudentid(value)
         }
         setOpendialogtype('deleteStudent')
     }
@@ -204,39 +235,76 @@ export default function StudentsList(props) {
                     [classes.contentShift]: opendrawer,
                 })}
             >
-                <TableContainer component={Paper} className={classes.container} >
-                    <Table className={classes.table} stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">
-                                    <Typography variant="h6">Name</Typography>
-                                </TableCell>
-                                <TableCell align="center"><Typography variant="h6">Email</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Program</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {students.map((row) => (
-                                <TableRow key={row._id}>
-                                    <TableCell scope="row" align="center">
-                                        {row.name}
-                                    </TableCell>
-                                    <TableCell align="center">{row.email}</TableCell>
-                                    <TableCell align="center">{row.program}</TableCell>
+                <Paper className={classes.paper}>
+                    <TableContainer className={classes.container} >
+                        <Table className={classes.table} stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
                                     <TableCell align="center">
-                                        <Button variant="outlined" color="primary" value={row._id} onClick={handleEditStudentDialogOpen}>
-                                            Edit
-                                    </Button>
-                                        <Button className={classes.btn} variant="outlined" color="primary" value={row._id} onClick={handleDeleteStudentDialogOpen}>
-                                            Delete
-                                    </Button>
+                                        <Typography variant="h6">Name</Typography>
                                     </TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Email</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Program</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {(rowsPerPage > 0
+                                    ? students.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : students
+                                ).map((row) => (
+                                    <TableRow key={row._id}>
+                                        <TableCell scope="row" align="center">
+                                            {row.name}
+                                        </TableCell>
+                                        <TableCell align="center">{row.email}</TableCell>
+                                        <TableCell align="center">{row.program}</TableCell>
+                                        <TableCell align="center">
+                                            <IconButton
+                                                color="primary"
+                                                aria-label="edit"
+                                                value={row._id}
+                                                onClick={handleEditStudentDialogOpen}
+                                                edge="start"
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                color="primary"
+                                                aria-label="edit"
+                                                value={row._id}
+                                                onClick={handleDeleteStudentDialogOpen}
+                                                edge="start"
+                                                className={clsx(classes.btn)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                {emptyrows > 0 && (
+                                    <TableRow style={{ height: 53 * emptyrows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                        colSpan={3}
+                        count={students.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                            inputProps: { 'aria-label': 'rows per page' },
+                            native: true,
+                        }}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                    />
+                </Paper>
             </main>
             <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleAddStudentDialogOpen}>
                 <AddIcon />

@@ -14,7 +14,12 @@ import Alert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import TablePaginationActions from '../TablePaginationActions.js';
+import TablePagination from '@material-ui/core/TablePagination';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import InstructorDataService from "./InstructorService";
@@ -27,16 +32,23 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
     },
     container: {
-        marginTop: theme.spacing(8)
+        maxHeight: 600
     },
     table: {
         minWidth: 650
+    },
+    paper: {
+        marginTop: theme.spacing(8),
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
     },
     btn: {
         marginLeft: '5px'
     },
     fab: {
-        position: 'absolute',
+        position: 'fixed',
         bottom: theme.spacing(2),
         right: theme.spacing(2),
     },
@@ -69,6 +81,24 @@ export default function InstructorsList(props) {
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [mounted, setMounted] = useState(true);
     const [opendrawer, setOpendrawer] = useState(true);
+
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [emptyrows, setEmptyrows] = useState(0);
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    useEffect(() => {
+        let emptyRows = rowsPerPage - Math.min(rowsPerPage, instructors.length - page * rowsPerPage)
+        setEmptyrows(emptyRows)
+    }, [rowsPerPage, instructors, page]);
 
     useEffect(() => {
         if (instructors.length && !alert && !alertmsg) {
@@ -115,15 +145,17 @@ export default function InstructorsList(props) {
     }
 
     const handleEditInstructorDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setInstructorid(e.target.parentElement.value)
+        if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
+            let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
+            setInstructorid(value)
         }
         setOpendialogtype('editInstructor')
     }
 
     const handleDeleteInstructorDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setInstructorid(e.target.parentElement.value)
+        if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
+            let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
+            setInstructorid(value)
         }
         setOpendialogtype('deleteInstructor')
     }
@@ -211,39 +243,76 @@ export default function InstructorsList(props) {
                     [classes.contentShift]: opendrawer,
                 })}
             >
-                <TableContainer component={Paper} className={classes.container} >
-                    <Table className={classes.table} stickyHeader aria-label="sticky table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell align="center">
-                                    <Typography variant="h6">First&nbsp;Name</Typography>
-                                </TableCell>
-                                <TableCell align="center"><Typography variant="h6">Last&nbsp;Name</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Course</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {instructors.map((row) => (
-                                <TableRow key={row._id}>
-                                    <TableCell scope="row" align="center">
-                                        {row.firstName}
-                                    </TableCell>
-                                    <TableCell align="center">{row.lastName}</TableCell>
-                                    <TableCell align="center">{row.course}</TableCell>
+                <Paper className={classes.paper}>
+                    <TableContainer className={classes.container} >
+                        <Table className={classes.table} stickyHeader aria-label="sticky table">
+                            <TableHead>
+                                <TableRow>
                                     <TableCell align="center">
-                                        <Button variant="outlined" color="primary" value={row._id} onClick={handleEditInstructorDialogOpen}>
-                                            Edit
-                                    </Button>
-                                        <Button className={classes.btn} variant="outlined" color="primary" value={row._id} onClick={handleDeleteInstructorDialogOpen}>
-                                            Delete
-                                    </Button>
+                                        <Typography variant="h6">First&nbsp;Name</Typography>
                                     </TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Last&nbsp;Name</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Course</Typography></TableCell>
+                                    <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {(rowsPerPage > 0
+                                    ? instructors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : instructors
+                                ).map((row) => (
+                                    <TableRow key={row._id}>
+                                        <TableCell scope="row" align="center">
+                                            {row.firstName}
+                                        </TableCell>
+                                        <TableCell align="center">{row.lastName}</TableCell>
+                                        <TableCell align="center">{row.course}</TableCell>
+                                        <TableCell align="center">
+                                            <IconButton
+                                                color="primary"
+                                                aria-label="edit"
+                                                value={row._id}
+                                                onClick={handleEditInstructorDialogOpen}
+                                                edge="start"
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                color="primary"
+                                                aria-label="edit"
+                                                value={row._id}
+                                                onClick={handleDeleteInstructorDialogOpen}
+                                                edge="start"
+                                                className={clsx(classes.btn)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                                {emptyrows > 0 && (
+                                    <TableRow style={{ height: 53 * emptyrows }}>
+                                        <TableCell colSpan={6} />
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                        colSpan={3}
+                        count={instructors.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        SelectProps={{
+                            inputProps: { 'aria-label': 'rows per page' },
+                            native: true,
+                        }}
+                        onChangePage={handleChangePage}
+                        onChangeRowsPerPage={handleChangeRowsPerPage}
+                        ActionsComponent={TablePaginationActions}
+                    />
+                </Paper>
             </main>
             <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleAddInstructorDialogOpen}>
                 <AddIcon />
