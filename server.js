@@ -7,8 +7,9 @@ const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 const cors = require('cors');
 const mongoose = require('mongoose');
+const passport = require("passport");
 
-const config = require('./config/db');
+const config = require('./config/keys');
 
 // Use Node's default promise instead of Mongoose's promise library
 mongoose.Promise = global.Promise;
@@ -43,9 +44,16 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // Initialize routes middleware
+app.use('/api/students', require('./routes/students'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/instructors', require('./routes/instructors'));
 app.use('/api/programs', require('./routes/programs'));
+
+
+// Passport middleware
+app.use(passport.initialize());
+// Passport config
+require("./config/passport")(passport);
 
 // Use express's default error handling middleware
 app.use((err, req, res, next) => {
@@ -71,25 +79,3 @@ const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
     console.log(`Listening on port ${port}`);
 });
-
-// Set up socket.io
-// const io = socket(server);
-// let online = 0;
-
-// io.on('connection', (socket) => {
-//     // online++;
-//     console.log(`Socket ${socket.id} connected.`);
-//     // console.log(`Online: ${online}`);
-//     // io.emit('visitor enters', online);
-
-//     socket.on('add', data => socket.broadcast.emit('add', data));
-//     socket.on('update', data => socket.broadcast.emit('update', data));
-//     socket.on('delete', data => socket.broadcast.emit('delete', data));
-
-//     socket.on('disconnect', () => {
-//         // online--;
-//         console.log(`Socket ${socket.id} disconnected.`);
-//         // console.log(`Online: ${online}`);
-//         // io.emit('visitor exits', online);
-//     });
-// });

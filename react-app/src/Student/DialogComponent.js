@@ -14,31 +14,31 @@ export default function DialogComponent(props) {
     const classes = useStyles();
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const [user, setUser] = useState({
+    const [student, setStudent] = useState({
         name: '',
         email: '',
         program: ''
     });
 
     useEffect(() => {
-        if (!props.userid || props.userid === 'addUser') {
-            setUser({
+        if (!props.studentid || props.studentid === 'addStudent') {
+            setStudent({
                 name: '',
                 email: '',
                 program: '',
             })
             return
         }
-        const user = props.users.find(usr => usr._id === props.userid)
-        setUser({
-            name: user.name,
-            email: user.email,
-            program: user.program,
+        const student = props.students.find(usr => usr._id === props.studentid)
+        setStudent({
+            name: student.name,
+            email: student.email,
+            program: student.program,
         })
-    }, [props.users, props.userid]);
+    }, [props.students, props.studentid]);
 
     const handleCloseDialog = () => {
-        setUser({
+        setStudent({
             name: '',
             email: '',
             program: ''
@@ -48,14 +48,14 @@ export default function DialogComponent(props) {
 
     const handleSubmit = () => {
         switch (props.opendialogtype) {
-            case 'addUser':
-                props.handleAddUser(user)
+            case 'addStudent':
+                props.handleAddStudent(student)
                 break;
-            case 'editUser':
-                props.handleUpdateUser(props.userid, user)
+            case 'editStudent':
+                props.handleUpdateStudent(props.studentid, student)
                 break;
-            case 'deleteUser':
-                props.handleDeleteUser(props.userid, user)
+            case 'deleteStudent':
+                props.handleDeleteStudent(props.studentid, student)
                 break;
             default:
                 break;
@@ -66,13 +66,13 @@ export default function DialogComponent(props) {
         if (e.target && e.target.id) {
             switch (e.target.id) {
                 case 'name':
-                    setUser({ ...user, name: e.target.value })
+                    setStudent({ ...student, name: e.target.value })
                     break;
                 case 'email':
-                    setUser({ ...user, email: e.target.value })
+                    setStudent({ ...student, email: e.target.value })
                     break;
                 case 'program':
-                    setUser({ ...user, program: e.target.value })
+                    setStudent({ ...student, program: e.target.value })
                     break;
                 default:
                     break;
@@ -84,60 +84,60 @@ export default function DialogComponent(props) {
         <div>
             <Dialog
                 fullScreen={fullScreen}
-                open={props.userid ? true : false}
+                open={props.studentid ? true : false}
                 onClose={props.handleCloseDialog}
                 aria-labelledby="responsive-dialog-title"
                 fullWidth
             >
-                <DialogTitle id="responsive-dialog-title">{props.opendialogtype === 'addUser' ? 'Add' : (props.opendialogtype === 'editUser' ? 'Edit' : 'Delete')} Student</DialogTitle>
+                <DialogTitle id="responsive-dialog-title">{props.opendialogtype === 'addStudent' ? 'Add' : (props.opendialogtype === 'editStudent' ? 'Edit' : 'Delete')} Student</DialogTitle>
                 <DialogContent>
                     <Box component="form" flexDirection="column" display="flex" className={classes.form} noValidate autoComplete="off">
                         <TextField
                             required
-                            disabled={props.opendialogtype === 'deleteUser'}
+                            disabled={props.opendialogtype === 'deleteStudent'}
                             inputProps={{
-                                readOnly: props.opendialogtype === 'deleteUser',
+                                readOnly: props.opendialogtype === 'deleteStudent',
                             }}
                             label="Name"
                             id="name"
-                            value={user.name}
+                            value={student.name}
                             onChange={handleChange}
                             variant="outlined"
                         />
                         <TextField
-                            disabled={props.opendialogtype === 'deleteUser'}
+                            disabled={props.opendialogtype === 'deleteStudent'}
                             required
                             inputProps={{
-                                readOnly: props.opendialogtype === 'deleteUser',
+                                readOnly: props.opendialogtype === 'deleteStudent',
                             }}
                             label="Email"
                             id="email"
                             onChange={handleChange}
-                            value={user.email}
+                            value={student.email}
                             variant="outlined"
                         />
                         <TextField
-                            disabled={props.opendialogtype === 'deleteUser'}
+                            disabled={props.opendialogtype === 'deleteStudent'}
                             required
                             inputProps={{
-                                readOnly: props.opendialogtype === 'deleteUser',
+                                readOnly: props.opendialogtype === 'deleteStudent',
                             }}
                             label="Program"
                             id="program"
                             onChange={handleChange}
-                            value={user.program}
+                            value={student.program}
                             variant="outlined"
                         />
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    {props.opendialogtype === 'deleteUser' && <Button onClick={handleSubmit} color="primary">
+                    {props.opendialogtype === 'deleteStudent' && <Button onClick={handleSubmit} color="primary">
                         Delete
                     </Button>}
-                    {props.opendialogtype === 'editUser' && <Button onClick={handleSubmit} color="primary">
+                    {props.opendialogtype === 'editStudent' && <Button onClick={handleSubmit} color="primary">
                         Update
                     </Button>}
-                    {props.opendialogtype === 'addUser' && <Button onClick={handleSubmit} color="primary">
+                    {props.opendialogtype === 'addStudent' && <Button onClick={handleSubmit} color="primary">
                         Add
                     </Button>}
                     <Button autoFocus onClick={handleCloseDialog} color="primary">

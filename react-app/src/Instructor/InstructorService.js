@@ -20,14 +20,6 @@ const remove = id => {
     return http.delete(`/instructors/${id}`);
 };
 
-// const removeAll = () => {
-//     return http.delete(`/tutorials`);
-// };
-
-// const findByTitle = title => {
-//     return http.get(`/tutorials?title=${title}`);
-// };
-
 export default {
     getAll,
     get,

@@ -1,5 +1,5 @@
-import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
+import clsx from 'clsx';
 import Button from '@material-ui/core/Button';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -16,13 +16,12 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 
-import ProgramDataService from "./ProgramService";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Navigation from '../Navigation'
+import StudentDataService from "./StudentService";
 import DialogComponent from './DialogComponent';
+import Navigation from '../Navigation'
 
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -59,40 +58,38 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ProgramsList(props) {
+export default function StudentsList(props) {
     const theme = useTheme();
     const [alert, setAlert] = useState(false);
     const [alertmsg, setAlertmsg] = useState(null);
     const classes = useStyles();
-    const [programs, setPrograms] = useState([]);
-    const [programid, setProgramid] = useState(null);
+    const [students, setStudents] = useState([]);
+    const [studentid, setStudentid] = useState(null);
     const [opendialogtype, setOpendialogtype] = React.useState(null);
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [mounted, setMounted] = useState(true);
     const [opendrawer, setOpendrawer] = useState(true);
 
     useEffect(() => {
-        if (programs.length && !alert && !alertmsg) {
+        if (students.length && !alert && !alertmsg) {
             return () => {
                 setMounted(false);
             }
         }
-        ProgramDataService.getAll()
+        StudentDataService.getAll()
             .then(response => {
-                console.log(2, mounted)
                 console.log(response.data);
                 if (mounted) {
-                    setPrograms(response.data)
+                    setStudents(response.data)
                 }
             })
             .catch(e => {
                 console.log(e);
             })
-        console.log('inside')
         return () => {
             setMounted(false);
         }
-    }, [alert, programs, alertmsg, mounted]);
+    }, [alert, students, alertmsg, mounted]);
 
     useEffect(() => {
         if (alert) {
@@ -102,23 +99,9 @@ export default function ProgramsList(props) {
         }
     }, [alert])
 
-    const handleAddProgramDialogOpen = (e) => {
-        setProgramid('addProgram')
-        setOpendialogtype('addProgram')
-    }
-
-    const handleEditProgramDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setProgramid(e.target.parentElement.value)
-        }
-        setOpendialogtype('editProgram')
-    }
-
-    const handleDeleteProgramDialogOpen = (e) => {
-        if (e.target && e.target.parentElement && e.target.parentElement.value) {
-            setProgramid(e.target.parentElement.value)
-        }
-        setOpendialogtype('deleteProgram')
+    const handleAddStudentDialogOpen = (e) => {
+        setStudentid('addStudent')
+        setOpendialogtype('addStudent')
     }
 
     const handleDrawerOpen = () => {
@@ -129,23 +112,37 @@ export default function ProgramsList(props) {
         setOpendrawer(false);
     };
 
+    const handleEditStudentDialogOpen = (e) => {
+        if (e.target && e.target.parentElement && e.target.parentElement.value) {
+            setStudentid(e.target.parentElement.value)
+        }
+        setOpendialogtype('editStudent')
+    }
+
+    const handleDeleteStudentDialogOpen = (e) => {
+        if (e.target && e.target.parentElement && e.target.parentElement.value) {
+            setStudentid(e.target.parentElement.value)
+        }
+        setOpendialogtype('deleteStudent')
+    }
+
     const handleCloseDialog = (e) => {
-        setProgramid(null);
+        setStudentid(null);
         setTimeout(() => {
             setOpendialogtype(null);
         }, 100);
     }
 
-    const handleAddProgram = (program) => {
-        ProgramDataService.create(program)
+    const handleAddStudent = (student) => {
+        StudentDataService.create(student)
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
                     console.log(1, mounted)
-                    setPrograms([...programs, response.data.result])
+                    setStudents([...students, response.data.result])
                     console.log(3, mounted)
                     setAlert('add')
-                    setAlertmsg('Program successfully added.')
+                    setAlertmsg('Student successfully added.')
                 }
             })
             .catch(err => {
@@ -156,22 +153,20 @@ export default function ProgramsList(props) {
                 }
             })
     }
-    const handleUpdateProgram = (id, program) =>
-        ProgramDataService.update(id, program)
+    const handleUpdateStudent = (id, student) =>
+        StudentDataService.update(id, student)
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
-                    let updatedPrograms = programs.map(pgm => {
-                        if (pgm._id === response.data.result._id) {
+                    let updatedStudents = students.map(usr => {
+                        if (usr._id === response.data.result._id) {
                             return response.data.result
                         }
-                        return pgm
+                        return usr
                     })
-                    setPrograms(updatedPrograms)
-                    console.log(3, mounted)
+                    setStudents(updatedStudents)
                     setAlert('update')
-                    setAlertmsg('Program successfully updated.')
+                    setAlertmsg('Student successfully updated.')
                 }
             })
             .catch(err => {
@@ -183,16 +178,14 @@ export default function ProgramsList(props) {
             })
 
 
-    const handleDeleteProgram = (programid) =>
-        ProgramDataService.remove(programid)
+    const handleDeleteStudent = (studentid) =>
+        StudentDataService.remove(studentid)
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
-                    setPrograms(programs.filter(pgm => pgm._id !== response.data.result._id))
-                    console.log(3, mounted)
+                    setStudents(students.filter(usr => usr._id !== response.data.result._id))
                     setAlert('delete')
-                    setAlertmsg('Program successfully deleted.')
+                    setAlertmsg('Student successfully deleted.')
                 }
             })
             .catch(err => {
@@ -205,7 +198,7 @@ export default function ProgramsList(props) {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <Navigation heading="Programs" opendrawer={opendrawer} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} isAuth={props.isAuth} handleLogout={props.handleLogout} />
+            <Navigation heading="Students" opendrawer={opendrawer} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} handleLogout={props.handleLogout} isAuth={props.isAuth} />
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: opendrawer,
@@ -215,29 +208,27 @@ export default function ProgramsList(props) {
                     <Table className={classes.table} stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
-                                <TableCell align="center"><Typography variant="h6">Title</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Duration</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Is&nbsp;Co-op&nbsp;included</Typography></TableCell>
-                                <TableCell align="center"><Typography variant="h6">Admissions&nbsp;Link</Typography></TableCell>
+                                <TableCell align="center">
+                                    <Typography variant="h6">Name</Typography>
+                                </TableCell>
+                                <TableCell align="center"><Typography variant="h6">Email</Typography></TableCell>
+                                <TableCell align="center"><Typography variant="h6">Program</Typography></TableCell>
                                 <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {programs.map((row) => (
+                            {students.map((row) => (
                                 <TableRow key={row._id}>
-                                    <TableCell component="th" scope="row" align="center">
-                                        {row.title}
+                                    <TableCell scope="row" align="center">
+                                        {row.name}
                                     </TableCell>
-                                    <TableCell align="center">{row.duration}</TableCell>
-                                    <TableCell align="center">{row.isCoop}</TableCell>
+                                    <TableCell align="center">{row.email}</TableCell>
+                                    <TableCell align="center">{row.program}</TableCell>
                                     <TableCell align="center">
-                                        <a rel="noopener noreferrer" href={row.admissionsLink} target="_blank">{row.admissionsLink}</a>
-                                    </TableCell>
-                                    <TableCell align="center">
-                                        <Button variant="outlined" color="primary" value={row._id} onClick={handleEditProgramDialogOpen}>
+                                        <Button variant="outlined" color="primary" value={row._id} onClick={handleEditStudentDialogOpen}>
                                             Edit
                                     </Button>
-                                        <Button className={classes.btn} variant="outlined" color="primary" value={row._id} onClick={handleDeleteProgramDialogOpen}>
+                                        <Button className={classes.btn} variant="outlined" color="primary" value={row._id} onClick={handleDeleteStudentDialogOpen}>
                                             Delete
                                     </Button>
                                     </TableCell>
@@ -247,10 +238,10 @@ export default function ProgramsList(props) {
                     </Table>
                 </TableContainer>
             </main>
-            <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleAddProgramDialogOpen}>
+            <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleAddStudentDialogOpen}>
                 <AddIcon />
             </Fab>
-            <DialogComponent handleDeleteProgram={handleDeleteProgram} handleUpdateProgram={handleUpdateProgram} opendialogtype={opendialogtype} programs={programs} programid={programid} handleAddProgram={handleAddProgram} fullScreen={fullScreen} handleCloseDialog={handleCloseDialog} />
+            <DialogComponent handleDeleteStudent={handleDeleteStudent} handleUpdateStudent={handleUpdateStudent} opendialogtype={opendialogtype} students={students} studentid={studentid} handleAddStudent={handleAddStudent} fullScreen={fullScreen} handleCloseDialog={handleCloseDialog} />
             <Snackbar open={['add', 'update', 'delete'].includes(alert)} autoHideDuration={5000}>
                 <Alert severity="success" variant="filled">{alertmsg}</Alert>
             </Snackbar>
