@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: -drawerWidth,
     },
     contentShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
@@ -104,7 +105,7 @@ export default function CoursesList(props) {
         }
         CourseDataService.getAll()
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 if (mounted) {
                     setCourses(response.data)
                 }
@@ -171,9 +172,9 @@ export default function CoursesList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     setCourses([...courses, response.data.result])
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('add')
                     setAlertmsg('Course successfully added.')
                 }
@@ -297,7 +298,7 @@ export default function CoursesList(props) {
                                 ))}
                                 {emptyrows > 0 && (
                                     <TableRow style={{ height: 53 * emptyrows }}>
-                                        <TableCell colSpan={8} />
+                                        <TableCell colSpan={6} />
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -305,7 +306,7 @@ export default function CoursesList(props) {
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                        colSpan={3}
+                        colSpan={6}
                         count={courses.length}
                         rowsPerPage={rowsPerPage}
                         page={page}

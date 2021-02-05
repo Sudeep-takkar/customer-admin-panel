@@ -39,9 +39,14 @@ router.get('/', (req, res) => {
 router.post('/', postLimiter, (req, res) => {
 
     let newInstructor = new Instructor({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        course: req.body.course
+        // name	department	position	campus	contact	extension	email
+        name: req.body.name,
+        department: req.body.department,
+        position: req.body.position,
+        campus: req.body.campus,
+        contact: req.body.contact,
+        extension: req.body.extension,
+        email: req.body.email
     });
 
     newInstructor.save()
@@ -51,25 +56,46 @@ router.post('/', postLimiter, (req, res) => {
                 msg: `Successfully added!`,
                 result: {
                     _id: result._id,
-                    firstName: result.firstName,
-                    lastName: result.lastName,
-                    course: result.course
+                    name: result.name,
+                    department: result.department,
+                    position: result.position,
+                    campus: result.campus,
+                    contact: result.contact,
+                    extension: result.extension,
+                    email: result.email
                 }
             });
         })
         .catch((err) => {
 
             if (err.errors) {
-                if (err.errors.firstName) {
-                    res.status(400).json({ success: false, msg: err.errors.firstName.message });
+                // name	department	position	campus	contact	extension	email
+                if (err.errors.name) {
+                    res.status(400).json({ success: false, msg: err.errors.name.message });
                     return;
                 }
-                if (err.errors.lastName) {
-                    res.status(400).json({ success: false, msg: err.errors.lastName.message });
+                if (err.errors.department) {
+                    res.status(400).json({ success: false, msg: err.errors.department.message });
                     return;
                 }
-                if (err.errors.course) {
-                    res.status(400).json({ success: false, msg: err.errors.course.message });
+                if (err.errors.position) {
+                    res.status(400).json({ success: false, msg: err.errors.position.message });
+                    return;
+                }
+                if (err.errors.campus) {
+                    res.status(400).json({ success: false, msg: err.errors.campus.message });
+                    return;
+                }
+                if (err.errors.contact) {
+                    res.status(400).json({ success: false, msg: err.errors.contact.message });
+                    return;
+                }
+                if (err.errors.extension) {
+                    res.status(400).json({ success: false, msg: err.errors.extension.message });
+                    return;
+                }
+                if (err.errors.email) {
+                    res.status(400).json({ success: false, msg: err.errors.email.message });
                     return;
                 }
                 res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
@@ -80,9 +106,13 @@ router.post('/', postLimiter, (req, res) => {
 router.put('/:id', (req, res) => {
 
     let updatedInstructor = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        course: req.body.course
+        name: req.body.name,
+        department: req.body.department,
+        position: req.body.position,
+        campus: req.body.campus,
+        contact: req.body.contact,
+        extension: req.body.extension,
+        email: req.body.email
     };
 
     Instructor.findOneAndUpdate({ _id: req.params.id }, updatedInstructor, { runValidators: true, context: 'query' })
@@ -94,9 +124,13 @@ router.put('/:id', (req, res) => {
                         msg: `Successfully updated!`,
                         result: {
                             _id: newResult._id,
-                            firstName: newResult.firstName,
-                            lastName: newResult.lastName,
-                            course: newResult.course
+                            name: newResult.name,
+                            department: newResult.department,
+                            position: newResult.position,
+                            campus: newResult.campus,
+                            contact: newResult.contact,
+                            extension: newResult.extension,
+                            email: newResult.email
                         }
                     });
                 })
@@ -107,16 +141,32 @@ router.put('/:id', (req, res) => {
         })
         .catch((err) => {
             if (err.errors) {
-                if (err.errors.firstName) {
-                    res.status(400).json({ success: false, msg: err.errors.firstName.message });
+                if (err.errors.name) {
+                    res.status(400).json({ success: false, msg: err.errors.name.message });
                     return;
                 }
-                if (err.errors.lastName) {
-                    res.status(400).json({ success: false, msg: err.errors.lastName.message });
+                if (err.errors.department) {
+                    res.status(400).json({ success: false, msg: err.errors.department.message });
                     return;
                 }
-                if (err.errors.course) {
-                    res.status(400).json({ success: false, msg: err.errors.course.message });
+                if (err.errors.position) {
+                    res.status(400).json({ success: false, msg: err.errors.position.message });
+                    return;
+                }
+                if (err.errors.campus) {
+                    res.status(400).json({ success: false, msg: err.errors.campus.message });
+                    return;
+                }
+                if (err.errors.contact) {
+                    res.status(400).json({ success: false, msg: err.errors.contact.message });
+                    return;
+                }
+                if (err.errors.extension) {
+                    res.status(400).json({ success: false, msg: err.errors.extension.message });
+                    return;
+                }
+                if (err.errors.email) {
+                    res.status(400).json({ success: false, msg: err.errors.email.message });
                     return;
                 }
                 res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
@@ -132,9 +182,13 @@ router.delete('/:id', (req, res) => {
                 msg: `It has been deleted.`,
                 result: {
                     _id: result._id,
-                    firstName: result.firstName,
-                    lastName: result.lastName,
-                    course: result.course
+                    name: result.name,
+                    department: result.department,
+                    position: result.position,
+                    campus: result.campus,
+                    contact: result.contact,
+                    extension: result.extension,
+                    email: result.email
                 }
             });
         })

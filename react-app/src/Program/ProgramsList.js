@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
         alignItems: 'center'
     },
     container: {
-        maxHeight: 600
+        maxHeight: 600,
     },
     table: {
         minWidth: 650
@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: -drawerWidth,
     },
     contentShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
@@ -109,8 +110,8 @@ export default function ProgramsList(props) {
         }
         ProgramDataService.getAll()
             .then(response => {
-                console.log(2, mounted)
-                console.log(response.data);
+                // console.log(2, mounted)
+                // console.log(response.data);
                 if (mounted) {
                     setPrograms(response.data)
                 }
@@ -118,7 +119,6 @@ export default function ProgramsList(props) {
             .catch(e => {
                 console.log(e);
             })
-        console.log('inside')
         return () => {
             setMounted(false);
         }
@@ -173,9 +173,9 @@ export default function ProgramsList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     setPrograms([...programs, response.data.result])
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('add')
                     setAlertmsg('Program successfully added.')
                 }
@@ -193,7 +193,7 @@ export default function ProgramsList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     let updatedPrograms = programs.map(pgm => {
                         if (pgm._id === response.data.result._id) {
                             return response.data.result
@@ -201,7 +201,7 @@ export default function ProgramsList(props) {
                         return pgm
                     })
                     setPrograms(updatedPrograms)
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('update')
                     setAlertmsg('Program successfully updated.')
                 }
@@ -220,9 +220,9 @@ export default function ProgramsList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     setPrograms(programs.filter(pgm => pgm._id !== response.data.result._id))
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('delete')
                     setAlertmsg('Program successfully deleted.')
                 }
@@ -315,7 +315,7 @@ export default function ProgramsList(props) {
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                        colSpan={3}
+                        colSpan={10}
                         count={programs.length}
                         rowsPerPage={rowsPerPage}
                         page={page}

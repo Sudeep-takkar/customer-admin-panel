@@ -48,7 +48,7 @@ router.post('/', postLimiter, (req, res) => {
     // else if (age > 130 && age != '') return res.status(403).json({ success: false, msg: `You're too old for this.` });
     let newProgram = new Program({
         title: sanitizeTitle(req.body.title),
-        duration: sanitizeDuration(req.body.duration),
+        duration: req.body.duration,
         programCode: req.body.programCode,
         deliveryType: req.body.deliveryType,
         isCoop: req.body.isCoop,
@@ -128,7 +128,7 @@ router.put('/:id', (req, res) => {
 
     let updatedProgram = {
         title: sanitizeTitle(req.body.title),
-        duration: sanitizeDuration(req.body.duration),
+        duration: req.body.duration,
         programCode: req.body.programCode,
         deliveryType: req.body.deliveryType,
         isCoop: req.body.isCoop,
@@ -242,7 +242,4 @@ module.exports = router;
 sanitizeTitle = (title) => {
     return stringCapitalizeName(title);
 }
-sanitizeDuration = (duration) => {
-    if (isNaN(duration) && duration != '') return '';
-    return (duration === '') ? duration : parseInt(duration);
-}
+

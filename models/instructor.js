@@ -1,19 +1,35 @@
 
 const mongoose = require('mongoose');
 const unique = require('mongoose-unique-validator');
-
+// name	department	position	campus	contact	extension	email
 const InstructorSchema = new mongoose.Schema({
-    firstName: {
+    name: {
         type: String,
-        required: [true, 'First name is required.']
+        required: [true, 'Name is required.']
     },
-    lastName: {
+    department: {
         type: String,
-        required: [true, 'Last name is required.']
+        required: [true, 'Department is required.']
     },
-    course: {
+    position: {
         type: String,
-        required: [true, 'Course is required.'],
+        required: [true, 'Designation is required.'],
+    },
+    email: {
+        type: String,
+        required: [true, 'Email is required.'],
+    },
+    campus: {
+        type: String,
+        required: false
+    },
+    contact: {
+        type: String,
+        required: false
+    },
+    extension: {
+        type: String,
+        required: false
     }
 });
 

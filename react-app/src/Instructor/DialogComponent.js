@@ -15,33 +15,49 @@ export default function DialogComponent(props) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [instructor, setInstructor] = useState({
-        firstName: '',
-        lastName: '',
-        course: ''
+        name: '',
+        department: '',
+        position: '',
+        campus: '',
+        contact: '',
+        extension: '',
+        email: ''
     });
 
     useEffect(() => {
         if (!props.instructorid || props.instructorid === 'addInstructor') {
             setInstructor({
-                firstName: '',
-                lastName: '',
-                course: ''
+                name: '',
+                department: '',
+                position: '',
+                campus: '',
+                contact: '',
+                extension: '',
+                email: ''
             })
             return
         }
         const instructor = props.instructors.find(usr => usr._id === props.instructorid)
         setInstructor({
-            firstName: instructor.firstName,
-            lastName: instructor.lastName,
-            course: instructor.course,
+            name: instructor.name,
+            department: instructor.department,
+            position: instructor.position,
+            campus: instructor.campus,
+            contact: instructor.contact,
+            extension: instructor.extension,
+            email: instructor.email
         })
     }, [props.instructors, props.instructorid]);
 
     const handleCloseDialog = () => {
         setInstructor({
-            firstName: '',
-            lastName: '',
-            course: ''
+            name: '',
+            department: '',
+            position: '',
+            campus: '',
+            contact: '',
+            extension: '',
+            email: ''
         });
         props.handleCloseDialog();
     }
@@ -65,14 +81,26 @@ export default function DialogComponent(props) {
     const handleChange = (e) => {
         if (e.target && e.target.id) {
             switch (e.target.id) {
-                case 'firstName':
-                    setInstructor({ ...instructor, firstName: e.target.value })
+                case 'name':
+                    setInstructor({ ...instructor, name: e.target.value })
                     break;
-                case 'lastName':
-                    setInstructor({ ...instructor, lastName: e.target.value })
+                case 'department':
+                    setInstructor({ ...instructor, department: e.target.value })
                     break;
-                case 'course':
-                    setInstructor({ ...instructor, course: e.target.value })
+                case 'email':
+                    setInstructor({ ...instructor, email: e.target.value })
+                    break;
+                case 'position':
+                    setInstructor({ ...instructor, position: e.target.value })
+                    break;
+                case 'campus':
+                    setInstructor({ ...instructor, campus: e.target.value })
+                    break;
+                case 'contact':
+                    setInstructor({ ...instructor, contact: e.target.value })
+                    break;
+                case 'extension':
+                    setInstructor({ ...instructor, extension: e.target.value })
                     break;
                 default:
                     break;
@@ -98,9 +126,9 @@ export default function DialogComponent(props) {
                             inputProps={{
                                 readOnly: props.opendialogtype === 'deleteInstructor',
                             }}
-                            label="First Name"
-                            id="firstName"
-                            value={instructor.firstName}
+                            label="Name"
+                            id="name"
+                            value={instructor.name}
                             onChange={handleChange}
                             variant="outlined"
                         />
@@ -110,10 +138,10 @@ export default function DialogComponent(props) {
                             inputProps={{
                                 readOnly: props.opendialogtype === 'deleteInstructor',
                             }}
-                            label="Last Email"
-                            id="lastName"
+                            label="Department"
+                            id="department"
                             onChange={handleChange}
-                            value={instructor.lastName}
+                            value={instructor.department}
                             variant="outlined"
                         />
                         <TextField
@@ -122,10 +150,55 @@ export default function DialogComponent(props) {
                             inputProps={{
                                 readOnly: props.opendialogtype === 'deleteInstructor',
                             }}
-                            label="Course"
-                            id="course"
+                            label="Email"
+                            id="email"
                             onChange={handleChange}
-                            value={instructor.course}
+                            value={instructor.email}
+                            variant="outlined"
+                        />
+                        <TextField
+                            required
+                            disabled={props.opendialogtype === 'deleteInstructor'}
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteInstructor',
+                            }}
+                            label="Designation"
+                            id="position"
+                            value={instructor.position}
+                            onChange={handleChange}
+                            variant="outlined"
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteInstructor'}
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteInstructor',
+                            }}
+                            label="Campus"
+                            id="campus"
+                            onChange={handleChange}
+                            value={instructor.campus}
+                            variant="outlined"
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteInstructor'}
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteInstructor',
+                            }}
+                            label="Contact"
+                            id="contact"
+                            onChange={handleChange}
+                            value={instructor.contact}
+                            variant="outlined"
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteInstructor'}
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteInstructor',
+                            }}
+                            label="Extension"
+                            id="extension"
+                            onChange={handleChange}
+                            value={instructor.extension}
                             variant="outlined"
                         />
                     </Box>

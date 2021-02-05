@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: -drawerWidth,
     },
     contentShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
@@ -103,7 +104,7 @@ export default function StudentsList(props) {
         }
         StudentDataService.getAll()
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 if (mounted) {
                     setStudents(response.data)
                 }
@@ -170,9 +171,9 @@ export default function StudentsList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     setStudents([...students, response.data.result])
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('add')
                     setAlertmsg('Student successfully added.')
                 }
@@ -295,7 +296,7 @@ export default function StudentsList(props) {
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                        colSpan={3}
+                        colSpan={4}
                         count={students.length}
                         rowsPerPage={rowsPerPage}
                         page={page}

@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: -drawerWidth,
     },
     contentShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
@@ -108,8 +109,8 @@ export default function InstructorsList(props) {
         }
         InstructorDataService.getAll()
             .then(response => {
-                console.log(2, mounted)
-                console.log(response.data);
+                // console.log(2, mounted)
+                // console.log(response.data);
                 if (mounted) {
                     setInstructors(response.data)
                 }
@@ -117,7 +118,6 @@ export default function InstructorsList(props) {
             .catch(e => {
                 console.log(e);
             })
-        console.log('inside')
         return () => {
             setMounted(false);
         }
@@ -172,9 +172,9 @@ export default function InstructorsList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     setInstructors([...instructors, response.data.result])
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('add')
                     setAlertmsg('Instructor successfully added.')
                 }
@@ -192,7 +192,7 @@ export default function InstructorsList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     let updatedInstructors = instructors.map(inst => {
                         if (inst._id === response.data.result._id) {
                             return response.data.result
@@ -200,7 +200,7 @@ export default function InstructorsList(props) {
                         return inst
                     })
                     setInstructors(updatedInstructors)
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('update')
                     setAlertmsg('Instructor successfully updated.')
                 }
@@ -219,10 +219,10 @@ export default function InstructorsList(props) {
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    console.log(1, mounted)
+                    // console.log(1, mounted)
                     setInstructors(instructors.filter(inst => inst._id !== response.data.result._id))
                     // setInstructors([...instructors, response.data.result])
-                    console.log(3, mounted)
+                    // console.log(3, mounted)
                     setAlert('delete')
                     setAlertmsg('Instructor successfully deleted.')
                 }
@@ -249,10 +249,14 @@ export default function InstructorsList(props) {
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell align="center">
-                                        <Typography variant="body1">First&nbsp;Name</Typography>
+                                        <Typography variant="body1">Name</Typography>
                                     </StyledTableCell>
-                                    <StyledTableCell align="center"><Typography variant="body1">Last&nbsp;Name</Typography></StyledTableCell>
-                                    <StyledTableCell align="center"><Typography variant="body1">Course</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Department</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Email</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Designation</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Campus</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Contact</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Extension</Typography></StyledTableCell>
                                     <StyledTableCell align="center"><Typography variant="body1">Actions</Typography></StyledTableCell>
                                 </TableRow>
                             </TableHead>
@@ -262,11 +266,16 @@ export default function InstructorsList(props) {
                                     : instructors
                                 ).map((row) => (
                                     <StyledTableRow key={row._id}>
+                                        {/* // name	department email	position	campus	contact	extension	 */}
                                         <StyledTableCell scope="row" align="center">
-                                            {row.firstName}
+                                            {row.name}
                                         </StyledTableCell>
-                                        <StyledTableCell align="center">{row.lastName}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.course}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.department}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.email}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.position}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.campus}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.contact}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.extension}</StyledTableCell>
                                         <StyledTableCell align="center">
                                             <IconButton
                                                 color="primary"
@@ -294,7 +303,7 @@ export default function InstructorsList(props) {
                                 ))}
                                 {emptyrows > 0 && (
                                     <TableRow style={{ height: 53 * emptyrows }}>
-                                        <TableCell colSpan={4} />
+                                        <TableCell colSpan={8} />
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -302,7 +311,7 @@ export default function InstructorsList(props) {
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                        colSpan={3}
+                        colSpan={8}
                         count={instructors.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
