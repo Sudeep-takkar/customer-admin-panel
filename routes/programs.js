@@ -49,8 +49,13 @@ router.post('/', postLimiter, (req, res) => {
     let newProgram = new Program({
         title: sanitizeTitle(req.body.title),
         duration: sanitizeDuration(req.body.duration),
+        programCode: req.body.programCode,
+        deliveryType: req.body.deliveryType,
         isCoop: req.body.isCoop,
-        admissionsLink: req.body.admissionsLink
+        admissionsLink: req.body.admissionsLink,
+        programStartDate: req.body.programStartDate,
+        campus: req.body.campus,
+        credentials: req.body.credentials
     });
 
     newProgram.save()
@@ -62,8 +67,13 @@ router.post('/', postLimiter, (req, res) => {
                     _id: result._id,
                     title: result.title,
                     duration: result.duration,
+                    programCode: result.programCode,
+                    deliveryType: result.deliveryType,
                     isCoop: result.isCoop,
-                    admissionsLink: result.admissionsLink
+                    admissionsLink: result.admissionsLink,
+                    programStartDate: result.programStartDate,
+                    campus: result.campus,
+                    credentials: result.credentials
                 }
             });
         })
@@ -86,6 +96,27 @@ router.post('/', postLimiter, (req, res) => {
                     res.status(400).json({ success: false, msg: err.errors.admissionsLink.message });
                     return;
                 }
+
+                if (err.errors.programCode) {
+                    res.status(400).json({ success: false, msg: err.errors.programCode.message });
+                    return;
+                }
+                if (err.errors.deliveryType) {
+                    res.status(400).json({ success: false, msg: err.errors.deliveryType.message });
+                    return;
+                }
+                if (err.errors.programStartDate) {
+                    res.status(400).json({ success: false, msg: err.errors.programStartDate.message });
+                    return;
+                }
+                if (err.errors.campus) {
+                    res.status(400).json({ success: false, msg: err.errors.campus.message });
+                    return;
+                }
+                if (err.errors.credentials) {
+                    res.status(400).json({ success: false, msg: err.errors.credentials.message });
+                    return;
+                }
                 // Show failed if all else fails for some reasons
                 res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
             }
@@ -98,8 +129,13 @@ router.put('/:id', (req, res) => {
     let updatedProgram = {
         title: sanitizeTitle(req.body.title),
         duration: sanitizeDuration(req.body.duration),
+        programCode: req.body.programCode,
+        deliveryType: req.body.deliveryType,
         isCoop: req.body.isCoop,
-        admissionsLink: req.body.admissionsLink
+        admissionsLink: req.body.admissionsLink,
+        programStartDate: req.body.programStartDate,
+        campus: req.body.campus,
+        credentials: req.body.credentials
     };
 
     Program.findOneAndUpdate({ _id: req.params.id }, updatedProgram, { runValidators: true, context: 'query' })
@@ -113,8 +149,13 @@ router.put('/:id', (req, res) => {
                             _id: newResult._id,
                             title: newResult.title,
                             duration: newResult.duration,
+                            programCode: newResult.programCode,
+                            deliveryType: newResult.deliveryType,
                             isCoop: newResult.isCoop,
-                            admissionsLink: newResult.admissionsLink
+                            admissionsLink: newResult.admissionsLink,
+                            programStartDate: newResult.programStartDate,
+                            campus: newResult.campus,
+                            credentials: newResult.credentials
                         }
                     });
                 })
@@ -141,6 +182,27 @@ router.put('/:id', (req, res) => {
                     res.status(400).json({ success: false, msg: err.errors.admissionsLink.message });
                     return;
                 }
+
+                if (err.errors.programCode) {
+                    res.status(400).json({ success: false, msg: err.errors.programCode.message });
+                    return;
+                }
+                if (err.errors.deliveryType) {
+                    res.status(400).json({ success: false, msg: err.errors.deliveryType.message });
+                    return;
+                }
+                if (err.errors.programStartDate) {
+                    res.status(400).json({ success: false, msg: err.errors.programStartDate.message });
+                    return;
+                }
+                if (err.errors.campus) {
+                    res.status(400).json({ success: false, msg: err.errors.campus.message });
+                    return;
+                }
+                if (err.errors.credentials) {
+                    res.status(400).json({ success: false, msg: err.errors.credentials.message });
+                    return;
+                }
                 // Show failed if all else fails for some reasons
                 res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
             }
@@ -159,8 +221,13 @@ router.delete('/:id', (req, res) => {
                     _id: result._id,
                     title: result.title,
                     duration: result.duration,
+                    programCode: result.programCode,
+                    deliveryType: result.deliveryType,
                     isCoop: result.isCoop,
-                    admissionsLink: result.admissionsLink
+                    admissionsLink: result.admissionsLink,
+                    programStartDate: result.programStartDate,
+                    campus: result.campus,
+                    credentials: result.credentials
                 }
             });
         })

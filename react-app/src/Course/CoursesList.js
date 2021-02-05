@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -21,9 +21,10 @@ import TablePaginationActions from '../TablePaginationActions.js';
 import TablePagination from '@material-ui/core/TablePagination';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
-import StudentDataService from "./StudentService";
+import CourseDataService from "./CourseService";
 import DialogComponent from './DialogComponent';
 import Navigation from '../Navigation'
+
 import { StyledTableCell, StyledTableRow } from '../StyledTable'
 
 const drawerWidth = 240;
@@ -70,13 +71,13 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function StudentsList(props) {
+export default function CoursesList(props) {
     const theme = useTheme();
     const [alert, setAlert] = useState(false);
     const [alertmsg, setAlertmsg] = useState(null);
     const classes = useStyles();
-    const [students, setStudents] = useState([]);
-    const [studentid, setStudentid] = useState(null);
+    const [courses, setCourses] = useState([]);
+    const [courseid, setCourseid] = useState(null);
     const [opendialogtype, setOpendialogtype] = useState(null);
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [mounted, setMounted] = useState(true);
@@ -96,16 +97,16 @@ export default function StudentsList(props) {
     };
 
     useEffect(() => {
-        if (students.length && !alert && !alertmsg) {
+        if (courses.length && !alert && !alertmsg) {
             return () => {
                 setMounted(false);
             }
         }
-        StudentDataService.getAll()
+        CourseDataService.getAll()
             .then(response => {
                 console.log(response.data);
                 if (mounted) {
-                    setStudents(response.data)
+                    setCourses(response.data)
                 }
             })
             .catch(e => {
@@ -114,7 +115,7 @@ export default function StudentsList(props) {
         return () => {
             setMounted(false);
         }
-    }, [alert, students, alertmsg, mounted]);
+    }, [alert, courses, alertmsg, mounted]);
 
     useEffect(() => {
         if (alert) {
@@ -125,13 +126,13 @@ export default function StudentsList(props) {
     }, [alert])
 
     useEffect(() => {
-        let emptyRows = rowsPerPage - Math.min(rowsPerPage, students.length - page * rowsPerPage)
+        let emptyRows = rowsPerPage - Math.min(rowsPerPage, courses.length - page * rowsPerPage)
         setEmptyrows(emptyRows)
-    }, [rowsPerPage, students, page]);
+    }, [rowsPerPage, courses, page]);
 
-    const handleAddStudentDialogOpen = (e) => {
-        setStudentid('addStudent')
-        setOpendialogtype('addStudent')
+    const handleAddCourseDialogOpen = (e) => {
+        setCourseid('addCourse')
+        setOpendialogtype('addCourse')
     }
 
     const handleDrawerOpen = () => {
@@ -142,39 +143,39 @@ export default function StudentsList(props) {
         setOpendrawer(false);
     };
 
-    const handleEditStudentDialogOpen = (e) => {
+    const handleEditCourseDialogOpen = (e) => {
         if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
             let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
-            setStudentid(value)
+            setCourseid(value)
         }
-        setOpendialogtype('editStudent')
+        setOpendialogtype('editCourse')
     }
 
-    const handleDeleteStudentDialogOpen = (e) => {
+    const handleDeleteCourseDialogOpen = (e) => {
         if (e.target && e.target.parentElement && e.target.parentElement.parentElement) {
             let value = e.target.parentElement.parentElement.value || e.target.parentElement.parentElement.parentElement.value
-            setStudentid(value)
+            setCourseid(value)
         }
-        setOpendialogtype('deleteStudent')
+        setOpendialogtype('deleteCourse')
     }
 
     const handleCloseDialog = (e) => {
-        setStudentid(null);
+        setCourseid(null);
         setTimeout(() => {
             setOpendialogtype(null);
         }, 100);
     }
 
-    const handleAddStudent = (student) => {
-        StudentDataService.create(student)
+    const handleAddCourse = (course) => {
+        CourseDataService.create(course)
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
                     console.log(1, mounted)
-                    setStudents([...students, response.data.result])
+                    setCourses([...courses, response.data.result])
                     console.log(3, mounted)
                     setAlert('add')
-                    setAlertmsg('Student successfully added.')
+                    setAlertmsg('Course successfully added.')
                 }
             })
             .catch(err => {
@@ -185,20 +186,20 @@ export default function StudentsList(props) {
                 }
             })
     }
-    const handleUpdateStudent = (id, student) =>
-        StudentDataService.update(id, student)
+    const handleUpdateCourse = (id, course) =>
+        CourseDataService.update(id, course)
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    let updatedStudents = students.map(usr => {
+                    let updatedCourses = courses.map(usr => {
                         if (usr._id === response.data.result._id) {
                             return response.data.result
                         }
                         return usr
                     })
-                    setStudents(updatedStudents)
+                    setCourses(updatedCourses)
                     setAlert('update')
-                    setAlertmsg('Student successfully updated.')
+                    setAlertmsg('Course successfully updated.')
                 }
             })
             .catch(err => {
@@ -210,14 +211,14 @@ export default function StudentsList(props) {
             })
 
 
-    const handleDeleteStudent = (studentid) =>
-        StudentDataService.remove(studentid)
+    const handleDeleteCourse = (courseid) =>
+        CourseDataService.remove(courseid)
             .then(response => {
                 if (response.data && response.data.result) {
                     handleCloseDialog();
-                    setStudents(students.filter(usr => usr._id !== response.data.result._id))
+                    setCourses(courses.filter(usr => usr._id !== response.data.result._id))
                     setAlert('delete')
-                    setAlertmsg('Student successfully deleted.')
+                    setAlertmsg('Course successfully deleted.')
                 }
             })
             .catch(err => {
@@ -230,7 +231,7 @@ export default function StudentsList(props) {
     return (
         <div className={classes.root}>
             <CssBaseline />
-            <Navigation heading="Students" opendrawer={opendrawer} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} handleLogout={props.handleLogout} isAuth={props.isAuth} />
+            <Navigation heading="Courses" opendrawer={opendrawer} handleDrawerClose={handleDrawerClose} handleDrawerOpen={handleDrawerOpen} handleLogout={props.handleLogout} isAuth={props.isAuth} />
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: opendrawer,
@@ -242,32 +243,41 @@ export default function StudentsList(props) {
                             <TableHead>
                                 <TableRow>
                                     <StyledTableCell align="center">
-                                        <Typography variant="body1">Name</Typography>
+                                        <Typography variant="body1">Title</Typography>
                                     </StyledTableCell>
-                                    <StyledTableCell align="center"><Typography variant="body1">Email</Typography></StyledTableCell>
-                                    <StyledTableCell align="center"><Typography variant="body1">Program</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Course&nbsp;code</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Program&nbsp;code</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">No&nbsp;of&nbsp;Hours</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">No&nbsp;of&nbsp;Credits</Typography></StyledTableCell>
+                                    {/* <StyledTableCell align="center"><Typography variant="body1">Courses&nbsp;Pre-requisites</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Courses&nbsp;Co-requisites</Typography></StyledTableCell> */}
                                     <StyledTableCell align="center"><Typography variant="body1">Actions</Typography></StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {(rowsPerPage > 0
-                                    ? students.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    : students
+                                    ? courses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                    : courses
                                 ).map((row) => (
                                     <StyledTableRow key={row._id}>
                                         <StyledTableCell scope="row" align="center">
-                                            {row.name}
+                                            {row.title}
                                         </StyledTableCell>
-                                        <StyledTableCell align="center">{row.email}</StyledTableCell>
-                                        <StyledTableCell align="center">{row.program}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.courseCode}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.programCode}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.hours}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.credits}</StyledTableCell>
+                                        {/* <StyledTableCell align="center">{row.coursesPreRequisites}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.coursesCoRequisites}</StyledTableCell> */}
                                         <StyledTableCell align="center">
                                             <IconButton
                                                 color="primary"
                                                 aria-label="edit"
                                                 value={row._id}
-                                                onClick={handleEditStudentDialogOpen}
+                                                onClick={handleEditCourseDialogOpen}
                                                 edge="start"
                                                 size="small"
+
                                             >
                                                 <EditIcon />
                                             </IconButton>
@@ -275,7 +285,7 @@ export default function StudentsList(props) {
                                                 color="primary"
                                                 aria-label="edit"
                                                 value={row._id}
-                                                onClick={handleDeleteStudentDialogOpen}
+                                                onClick={handleDeleteCourseDialogOpen}
                                                 edge="start"
                                                 className={clsx(classes.btn)}
                                                 size="small"
@@ -287,7 +297,7 @@ export default function StudentsList(props) {
                                 ))}
                                 {emptyrows > 0 && (
                                     <TableRow style={{ height: 53 * emptyrows }}>
-                                        <TableCell colSpan={4} />
+                                        <TableCell colSpan={8} />
                                     </TableRow>
                                 )}
                             </TableBody>
@@ -296,7 +306,7 @@ export default function StudentsList(props) {
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                         colSpan={3}
-                        count={students.length}
+                        count={courses.length}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         SelectProps={{
@@ -309,10 +319,10 @@ export default function StudentsList(props) {
                     />
                 </Paper>
             </main>
-            <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleAddStudentDialogOpen}>
+            <Fab color="primary" aria-label="add" className={classes.fab} onClick={handleAddCourseDialogOpen}>
                 <AddIcon />
             </Fab>
-            <DialogComponent handleDeleteStudent={handleDeleteStudent} handleUpdateStudent={handleUpdateStudent} opendialogtype={opendialogtype} students={students} studentid={studentid} handleAddStudent={handleAddStudent} fullScreen={fullScreen} handleCloseDialog={handleCloseDialog} />
+            <DialogComponent handleDeleteCourse={handleDeleteCourse} handleUpdateCourse={handleUpdateCourse} opendialogtype={opendialogtype} courses={courses} courseid={courseid} handleAddCourse={handleAddCourse} fullScreen={fullScreen} handleCloseDialog={handleCloseDialog} />
             <Snackbar open={['add', 'update', 'delete'].includes(alert)} autoHideDuration={5000}>
                 <Alert severity="success" variant="filled">{alertmsg}</Alert>
             </Snackbar>

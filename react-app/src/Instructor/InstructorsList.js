@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import Button from '@material-ui/core/Button';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -25,6 +24,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import InstructorDataService from "./InstructorService";
 import DialogComponent from './DialogComponent';
 import Navigation from '../Navigation'
+import { StyledTableCell, StyledTableRow } from '../StyledTable'
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -83,7 +83,7 @@ export default function InstructorsList(props) {
     const [opendrawer, setOpendrawer] = useState(true);
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [emptyrows, setEmptyrows] = useState(0);
 
     const handleChangePage = (event, newPage) => {
@@ -248,12 +248,12 @@ export default function InstructorsList(props) {
                         <Table className={classes.table} stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center">
-                                        <Typography variant="h6">First&nbsp;Name</Typography>
-                                    </TableCell>
-                                    <TableCell align="center"><Typography variant="h6">Last&nbsp;Name</Typography></TableCell>
-                                    <TableCell align="center"><Typography variant="h6">Course</Typography></TableCell>
-                                    <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
+                                    <StyledTableCell align="center">
+                                        <Typography variant="body1">First&nbsp;Name</Typography>
+                                    </StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Last&nbsp;Name</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Course</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Actions</Typography></StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -261,19 +261,20 @@ export default function InstructorsList(props) {
                                     ? instructors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     : instructors
                                 ).map((row) => (
-                                    <TableRow key={row._id}>
-                                        <TableCell scope="row" align="center">
+                                    <StyledTableRow key={row._id}>
+                                        <StyledTableCell scope="row" align="center">
                                             {row.firstName}
-                                        </TableCell>
-                                        <TableCell align="center">{row.lastName}</TableCell>
-                                        <TableCell align="center">{row.course}</TableCell>
-                                        <TableCell align="center">
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">{row.lastName}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.course}</StyledTableCell>
+                                        <StyledTableCell align="center">
                                             <IconButton
                                                 color="primary"
                                                 aria-label="edit"
                                                 value={row._id}
                                                 onClick={handleEditInstructorDialogOpen}
                                                 edge="start"
+                                                size="small"
                                             >
                                                 <EditIcon />
                                             </IconButton>
@@ -284,15 +285,16 @@ export default function InstructorsList(props) {
                                                 onClick={handleDeleteInstructorDialogOpen}
                                                 edge="start"
                                                 className={clsx(classes.btn)}
+                                                size="small"
                                             >
                                                 <DeleteIcon />
                                             </IconButton>
-                                        </TableCell>
-                                    </TableRow>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
                                 ))}
                                 {emptyrows > 0 && (
                                     <TableRow style={{ height: 53 * emptyrows }}>
-                                        <TableCell colSpan={6} />
+                                        <TableCell colSpan={4} />
                                     </TableRow>
                                 )}
                             </TableBody>

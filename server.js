@@ -48,6 +48,7 @@ app.use('/api/students', require('./routes/students'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/instructors', require('./routes/instructors'));
 app.use('/api/programs', require('./routes/programs'));
+app.use('/api/courses', require('./routes/courses'));
 
 
 // Passport middleware

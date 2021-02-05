@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, BrowserRouter, Switch, Redirect } from "react-router-dom";
 
 import Students from '../Student/StudentsList.js'
+import Courses from '../Course/CoursesList.js'
 import Programs from '../Program/ProgramsList.js'
 import Instructors from '../Instructor/InstructorsList.js'
 import Login from '../Login.js'
@@ -102,6 +103,7 @@ function App() {
           <ProtectedRoute exact={true} path="/students" component={Students} handleLogout={handleLogout} isAuth={isAuth} />
           <ProtectedRoute exact={true} path="/instructors" component={Instructors} handleLogout={handleLogout} isAuth={isAuth} />
           <ProtectedRoute exact={true} path="/programs" component={Programs} handleLogout={handleLogout} isAuth={isAuth} />
+          <ProtectedRoute exact={true} path="/courses" component={Courses} handleLogout={handleLogout} isAuth={isAuth} />
         </Switch>
       </BrowserRouter>
       <Snackbar open={['register'].includes(alert)} autoHideDuration={5000}>

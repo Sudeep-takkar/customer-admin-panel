@@ -18,6 +18,7 @@ import PeopleAlt from '@material-ui/icons/PeopleAlt';
 import Assignment from '@material-ui/icons/Assignment';
 import PermContactCalendar from '@material-ui/icons/PermContactCalendar';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import AssessmentIcon from '@material-ui/icons/Assessment';
 
 import CampusBotLogo from './image(2).png';
 
@@ -87,6 +88,10 @@ const useStyles = makeStyles((theme) => ({
     left: {
         display: 'flex',
         alignItems: 'center'
+    },
+    link: {
+        color: "inherit",
+        textDecoration: 'none'
     }
 }));
 
@@ -115,7 +120,7 @@ export default function Navigation(props) {
                         </IconButton>
                         <Typography variant="h6" noWrap>
                             {props.heading} List
-                    </Typography>
+                        </Typography>
                     </div>
                     <IconButton
                         color="inherit"
@@ -148,22 +153,28 @@ export default function Navigation(props) {
                 </div>
                 <Divider />
                 <List>
-                    <Link to="/students">
+                    <Link to="/students" className={classes.link}>
                         <ListItem button selected={props.heading === 'Students'}>
                             <ListItemIcon><PeopleAlt /></ListItemIcon>
                             <ListItemText primary={"Students"} />
                         </ListItem>
                     </Link>
-                    <Link to="/programs">
+                    <Link to="/programs" className={classes.link}>
                         <ListItem button selected={props.heading === 'Programs'}>
                             <ListItemIcon><Assignment /></ListItemIcon>
                             <ListItemText primary={"Programs"} />
                         </ListItem>
                     </Link>
-                    <Link to="/instructors">
+                    <Link to="/instructors" className={classes.link}>
                         <ListItem button selected={props.heading === 'Instructors'}>
                             <ListItemIcon><PermContactCalendar /></ListItemIcon>
                             <ListItemText primary={"Instructors"} />
+                        </ListItem>
+                    </Link>
+                    <Link to="/courses" className={classes.link}>
+                        <ListItem button selected={props.heading === 'Courses'}>
+                            <ListItemIcon><AssessmentIcon /></ListItemIcon>
+                            <ListItemText primary={"Courses"} />
                         </ListItem>
                     </Link>
                 </List>

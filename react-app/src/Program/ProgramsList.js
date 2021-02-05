@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import Button from '@material-ui/core/Button';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -25,6 +24,7 @@ import ProgramDataService from "./ProgramService";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Navigation from '../Navigation'
 import DialogComponent from './DialogComponent';
+import { StyledTableCell, StyledTableRow } from '../StyledTable'
 
 const drawerWidth = 240;
 
@@ -84,7 +84,7 @@ export default function ProgramsList(props) {
     const [opendrawer, setOpendrawer] = useState(true);
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [emptyrows, setEmptyrows] = useState(0);
 
     const handleChangePage = (event, newPage) => {
@@ -248,11 +248,16 @@ export default function ProgramsList(props) {
                         <Table className={classes.table} stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell align="center"><Typography variant="h6">Title</Typography></TableCell>
-                                    <TableCell align="center"><Typography variant="h6">Duration</Typography></TableCell>
-                                    <TableCell align="center"><Typography variant="h6">Is&nbsp;Co-op&nbsp;included</Typography></TableCell>
-                                    <TableCell align="center"><Typography variant="h6">Admissions&nbsp;Link</Typography></TableCell>
-                                    <TableCell align="center"><Typography variant="h6">Actions</Typography></TableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Title</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Program&nbsp;code</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Length</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Delivery&nbsp;type</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Start&nbsp;date</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Campus</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Credentials</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Is&nbsp;Co-op&nbsp;included</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Admissions&nbsp;Link</Typography></StyledTableCell>
+                                    <StyledTableCell align="center"><Typography variant="body1">Actions</Typography></StyledTableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -260,16 +265,21 @@ export default function ProgramsList(props) {
                                     ? programs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     : programs
                                 ).map((row) => (
-                                    <TableRow key={row._id}>
-                                        <TableCell component="th" scope="row" align="center">
+                                    <StyledTableRow key={row._id}>
+                                        <StyledTableCell component="th" scope="row" align="center">
                                             {row.title}
-                                        </TableCell>
-                                        <TableCell align="center">{row.duration}</TableCell>
-                                        <TableCell align="center">{row.isCoop}</TableCell>
-                                        <TableCell align="center">
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">{row.programCode}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.duration}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.deliveryType}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.programStartDate}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.campus}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.credentials}</StyledTableCell>
+                                        <StyledTableCell align="center">{row.isCoop}</StyledTableCell>
+                                        <StyledTableCell align="center">
                                             <a rel="noopener noreferrer" href={row.admissionsLink} target="_blank">{row.admissionsLink}</a>
-                                        </TableCell>
-                                        <TableCell align="center">
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
                                             <IconButton
                                                 color="primary"
                                                 aria-label="edit"
@@ -277,6 +287,7 @@ export default function ProgramsList(props) {
                                                 onClick={handleEditProgramDialogOpen}
                                                 edge="start"
                                                 className={clsx(classes.menuButton)}
+                                                size="small"
                                             >
                                                 <EditIcon />
                                             </IconButton>
@@ -287,15 +298,16 @@ export default function ProgramsList(props) {
                                                 onClick={handleDeleteProgramDialogOpen}
                                                 edge="start"
                                                 className={clsx(classes.btn)}
+                                                size="small"
                                             >
                                                 <DeleteIcon />
                                             </IconButton>
-                                        </TableCell>
-                                    </TableRow>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
                                 ))}
                                 {emptyrows > 0 && (
                                     <TableRow style={{ height: 53 * emptyrows }}>
-                                        <TableCell colSpan={6} />
+                                        <TableCell colSpan={5} />
                                     </TableRow>
                                 )}
                             </TableBody>

@@ -17,8 +17,13 @@ export default function DialogComponent(props) {
     const [program, setProgram] = useState({
         title: '',
         duration: '',
+        programCode: '',
+        deliveryType: '',
         isCoop: '',
-        admissionsLink: ''
+        admissionsLink: '',
+        programStartDate: '',
+        campus: '',
+        credentials: ''
     });
 
     useEffect(() => {
@@ -26,8 +31,13 @@ export default function DialogComponent(props) {
             setProgram({
                 title: '',
                 duration: '',
+                programCode: '',
+                deliveryType: '',
                 isCoop: '',
-                admissionsLink: ''
+                admissionsLink: '',
+                programStartDate: '',
+                campus: '',
+                credentials: ''
             })
             return
         }
@@ -35,8 +45,13 @@ export default function DialogComponent(props) {
         setProgram({
             title: program.title,
             duration: program.duration,
+            programCode: program.programCode,
+            deliveryType: program.deliveryType,
             isCoop: program.isCoop,
             admissionsLink: program.admissionsLink,
+            programStartDate: program.programStartDate,
+            campus: program.campus,
+            credentials: program.credentials
         })
     }, [props.programs, props.programid]);
 
@@ -44,8 +59,13 @@ export default function DialogComponent(props) {
         setProgram({
             title: '',
             duration: '',
+            programCode: '',
+            deliveryType: '',
             isCoop: '',
-            admissionsLink: ''
+            admissionsLink: '',
+            programStartDate: '',
+            campus: '',
+            credentials: ''
         });
         props.handleCloseDialog();
     }
@@ -80,6 +100,21 @@ export default function DialogComponent(props) {
                     break;
                 case 'admissionsLink':
                     setProgram({ ...program, admissionsLink: e.target.value })
+                    break;
+                case 'programCode':
+                    setProgram({ ...program, programCode: e.target.value })
+                    break;
+                case 'deliveryType':
+                    setProgram({ ...program, deliveryType: e.target.value })
+                    break;
+                case 'programStartDate':
+                    setProgram({ ...program, programStartDate: e.target.value })
+                    break;
+                case 'campus':
+                    setProgram({ ...program, campus: e.target.value })
+                    break;
+                case 'credentials':
+                    setProgram({ ...program, credentials: e.target.value })
                     break;
                 default:
                     break;
@@ -118,7 +153,20 @@ export default function DialogComponent(props) {
                             inputProps={{
                                 readOnly: props.opendialogtype === 'deleteProgram',
                             }}
-                            label="Duration"
+                            label="Program code"
+                            id="programCode"
+                            onChange={handleChange}
+                            value={program.programCode}
+                            variant="outlined"
+
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteProgram'}
+                            required
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteProgram',
+                            }}
+                            label="Length"
                             id="duration"
                             onChange={handleChange}
                             value={program.duration}
@@ -147,6 +195,52 @@ export default function DialogComponent(props) {
                             id="admissionsLink"
                             onChange={handleChange}
                             value={program.admissionsLink}
+                            variant="outlined"
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteProgram'}
+                            required
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteProgram',
+                            }}
+                            label="Delivery Type"
+                            id="deliveryType"
+                            onChange={handleChange}
+                            value={program.deliveryType}
+                            variant="outlined"
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteProgram'}
+                            required
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteProgram',
+                            }}
+                            label="Start date"
+                            id="programStartDate"
+                            onChange={handleChange}
+                            value={program.programStartDate}
+                            variant="outlined"
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteProgram'}
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteProgram',
+                            }}
+                            label="Campus"
+                            id="campus"
+                            onChange={handleChange}
+                            value={program.campus}
+                            variant="outlined"
+                        />
+                        <TextField
+                            disabled={props.opendialogtype === 'deleteProgram'}
+                            inputProps={{
+                                readOnly: props.opendialogtype === 'deleteProgram',
+                            }}
+                            label="Credentials"
+                            id="credentials"
+                            onChange={handleChange}
+                            value={program.credentials}
                             variant="outlined"
                         />
                     </Box>

@@ -16,16 +16,35 @@ const ProgramSchema = new mongoose.Schema({
     title: {
         type: String,
         unique: true,
-        required: [true, 'Title is required.'],
-        validate: titleValidator
+        required: [true, 'Program title is required.']
+    },
+    programCode: {
+        type: String,
+        required: [true, 'Program code is required.'],
     },
     duration: {
-        type: Number,
-        required: [true, 'Duration is required.'],
+        type: String,
+        required: [true, 'Program length is required.'],
+    },
+    deliveryType: {
+        type: String,
+        required: [true, 'Program delivery type is required.'],
+    },
+    programStartDate: {
+        type: String,
+        required: [true, 'Program start date is required.'],
     },
     isCoop: {
         type: String,
         required: [true, 'Please provide an option.'],
+    },
+    campus: {
+        type: String,
+        required: false,
+    },
+    credentials: {
+        type: String,
+        required: false,
     },
     admissionsLink: {
         type: String,
