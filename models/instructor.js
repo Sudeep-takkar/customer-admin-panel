@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const unique = require('mongoose-unique-validator');
 // name	department	position	campus	contact	extension	email

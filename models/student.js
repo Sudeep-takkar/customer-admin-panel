@@ -44,14 +44,25 @@ const StudentSchema = new mongoose.Schema({
         unique: true,
         validate: emailValidator
     },
-    age: {
-        type: Number,
-        validate: ageValidator
-    },
-    program: {
+    programCode: {
         type: String,
-        required: [true, 'Program is required.'],
-        validate: permissionValidator
+        required: false
+    },
+    studentId: {
+        type: String,
+        required: false
+    },
+    isGraduated: {
+        type: String,
+        required: false
+    },
+    contactNo: {
+        type: String,
+        required: false
+    },
+    feesDue: {
+        type: String,
+        required: false
     }
 });
 

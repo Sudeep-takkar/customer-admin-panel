@@ -49,7 +49,10 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/instructors', require('./routes/instructors'));
 app.use('/api/programs', require('./routes/programs'));
 app.use('/api/courses', require('./routes/courses'));
-
+app.use('/api/employments', require('./routes/employments'));
+app.use('/api/forms', require('./routes/forms'));
+app.use('/api/queries', require('./routes/queries'));
+app.use('/api/bookings', require('./routes/bookings'));
 
 // Passport middleware
 app.use(passport.initialize());

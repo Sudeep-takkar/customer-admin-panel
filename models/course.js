@@ -31,6 +31,10 @@ const CourseSchema = new mongoose.Schema({
     coursesCoRequisites: {
         type: String,
         required: false
+    },
+    program: {
+        type: String,
+        required: false
     }
 });
 

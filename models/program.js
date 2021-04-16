@@ -49,6 +49,18 @@ const ProgramSchema = new mongoose.Schema({
     admissionsLink: {
         type: String,
         required: [true, 'Program link is required.'],
+    },
+    department: {
+        type: String
+    },
+    programContact: {
+        type: String
+    },
+    career: {
+        type: String
+    },
+    handbookLink: {
+        type: String
     }
 });
 

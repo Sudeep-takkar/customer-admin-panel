@@ -3,7 +3,7 @@ const router = express.Router();
 const RateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const stringCapitalizeName = require('string-capitalize-name');
-
+const _ = require('lodash');
 const Student = require('../models/student');
 
 // Attempt to limit spam post requests for inserting data
@@ -30,13 +30,38 @@ router.get('/:id', (req, res) => {
 
 // READ (ALL)
 router.get('/', (req, res) => {
-    Student.find({})
-        .then((result) => {
-            res.json(result);
+    let query = req.query;
+    if (!(query && Object.keys(query).length === 0 && query.constructor === Object)) {
+        const { fields, ...rest } = query;
+        const fieldList = fields ? fields.split(',') : []
+        const updatedQuery = _.mapValues(rest, (value) => {
+            return { $regex: new RegExp("^" + value.toLowerCase(), "i") }
         })
-        .catch((err) => {
-            res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
-        });
+        Student.find(updatedQuery)
+            .then((result) => {
+                if (fieldList.length) {
+                    const modifiedStudentList = _.reduce(result, (studentList, value, key) => {
+                        let studentObject = _.pick(value, fieldList);
+                        return studentList.concat(studentObject)
+                    }, []);
+                    res.json(modifiedStudentList);
+                } else {
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(404).json({ success: false, msg: `No such Student.` });
+            });
+    }
+    else {
+        Student.find({})
+            .then((result) => {
+                res.json(result);
+            })
+            .catch((err) => {
+                res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
+            });
+    }
 });
 
 // CREATE

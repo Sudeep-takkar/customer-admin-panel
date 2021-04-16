@@ -6,6 +6,8 @@ const stringCapitalizeName = require('string-capitalize-name');
 
 const Program = require('../models/program');
 
+const _ = require('lodash')
+
 // Attempt to limit spam post requests for inserting data
 const minutes = 5;
 const postLimiter = new RateLimit({
@@ -30,13 +32,38 @@ router.get('/:id', (req, res) => {
 
 // READ (ALL)
 router.get('/', (req, res) => {
-    Program.find({})
-        .then((result) => {
-            res.json(result);
+    let query = req.query;
+    if (!(query && Object.keys(query).length === 0 && query.constructor === Object)) {
+        const { fields, ...rest } = query;
+        const updatedQuery = _.mapValues(rest, (value) => {
+            return { $regex: new RegExp("^" + value.toLowerCase(), "i") }
         })
-        .catch((err) => {
-            res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
-        });
+        const fieldList = fields ? fields.split(',') : []
+        Program.find(updatedQuery)
+            .then((result) => {
+                if (fieldList.length) {
+                    const modifiedProgramList = _.reduce(result, (progList, value, key) => {
+                        const programObject = _.pick(value, fieldList)
+                        return progList.concat(programObject)
+                    }, []);
+                    res.json(modifiedProgramList);
+                } else {
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(404).json({ success: false, msg: `No such program.` });
+            });
+    }
+    else {
+        Program.find({})
+            .then((result) => {
+                res.json(result);
+            })
+            .catch((err) => {
+                res.status(500).json({ success: false, msg: `Something went wrong. ${err}` });
+            });
+    }
 });
 
 // CREATE
@@ -55,7 +82,11 @@ router.post('/', postLimiter, (req, res) => {
         admissionsLink: req.body.admissionsLink,
         programStartDate: req.body.programStartDate,
         campus: req.body.campus,
-        credentials: req.body.credentials
+        credentials: req.body.credentials,
+        department: req.body.department,
+        programContact: req.body.programContact,
+        career: req.body.career,
+        handbookLink: req.body.handbookLink
     });
 
     newProgram.save()
@@ -73,7 +104,11 @@ router.post('/', postLimiter, (req, res) => {
                     admissionsLink: result.admissionsLink,
                     programStartDate: result.programStartDate,
                     campus: result.campus,
-                    credentials: result.credentials
+                    credentials: result.credentials,
+                    department: result.department,
+                    programContact: result.programContact,
+                    career: result.career,
+                    handbookLink: result.handbookLink
                 }
             });
         })
@@ -135,7 +170,11 @@ router.put('/:id', (req, res) => {
         admissionsLink: req.body.admissionsLink,
         programStartDate: req.body.programStartDate,
         campus: req.body.campus,
-        credentials: req.body.credentials
+        credentials: req.body.credentials,
+        department: req.body.department,
+        programContact: req.body.programContact,
+        career: req.body.career,
+        handbookLink: req.body.handbookLink
     };
 
     Program.findOneAndUpdate({ _id: req.params.id }, updatedProgram, { runValidators: true, context: 'query' })
@@ -155,7 +194,11 @@ router.put('/:id', (req, res) => {
                             admissionsLink: newResult.admissionsLink,
                             programStartDate: newResult.programStartDate,
                             campus: newResult.campus,
-                            credentials: newResult.credentials
+                            credentials: newResult.credentials,
+                            department: newResult.department,
+                            programContact: newResult.programContact,
+                            career: newResult.career,
+                            handbookLink: newResult.handbookLink
                         }
                     });
                 })
@@ -227,7 +270,12 @@ router.delete('/:id', (req, res) => {
                     admissionsLink: result.admissionsLink,
                     programStartDate: result.programStartDate,
                     campus: result.campus,
-                    credentials: result.credentials
+                    credentials: result.credentials,
+                    department: result.department,
+                    programContact: result.programContact,
+                    career: result.career,
+                    handbookLink: result.handbookLink
+
                 }
             });
         })
